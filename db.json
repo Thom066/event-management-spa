@@ -1,0 +1,31 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "username": "admin",
+      "password": "admin123",
+      "role": "admin"
+    },
+    {
+      "id": "252b",
+      "username": "thomas",
+      "password": "123",
+      "role": "visitor"
+    }
+  ],
+  "events": [
+    {
+      "id": "f988",
+      "name": "Examen Modulo 3",
+      "description": "Examen de modulo 3 de javascript riwi",
+      "date": "2025-07-14"
+    },
+    {
+      "id": "f433",
+      "name": "Encuesta de satisfaccion modulo 3",
+      "description": "realiza la encuesta de satisfaccion",
+      "date": "2025-07-17"
+    }
+  ],
+  "registrations": []
+}
