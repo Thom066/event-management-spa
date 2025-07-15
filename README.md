@@ -1,4 +1,4 @@
-## SPA Event Management
+# SPA Event Management
 
 A single-page application for managing events with authentication, protected routes, and session persistence.
 
@@ -27,8 +27,7 @@ A single-page application for managing events with authentication, protected rou
 - Administrator: `admin` / `admin123`
 
 
-## Spanish  
-# Gestión de Eventos SPA
+# Spanish  -- Gestión de Eventos SPA
 
 Una Single Page Application para gestionar eventos con autenticación, rutas protegidas y persistencia de sesión.
 
