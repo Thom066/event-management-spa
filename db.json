@@ -21,10 +21,10 @@
       "date": "2025-07-14"
     },
     {
-      "id": "f433",
-      "name": "Encuesta de satisfaccion modulo 3",
+      "name": "Encuesta de satisfaccion modulo ",
       "description": "realiza la encuesta de satisfaccion",
-      "date": "2025-07-17"
+      "date": "2025-07-17",
+      "id": "f433"
     }
   ],
   "registrations": []

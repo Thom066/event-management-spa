@@ -1,172 +1,36 @@
-// events.js
-async function getEvents() {
-    const response = await fetch(`${API_URL}/events`);
-    return await response.json();
+import { getCurrentUser } from "./auth.js";
+
+export function renderCreateEvent() {
+  const user = getCurrentUser();
+  if (user?.rol !== "admin") {
+    return `<h2 class="text-danger">Acceso denegado</h2>`;
   }
-  
-  async function createEvent(event) {
-    await fetch(`${API_URL}/events`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(event)
+
+  return `
+    <h2>Crear Evento</h2>
+    <form id="createEventForm">
+      <input type="text" placeholder="Nombre del evento" id="name" required />
+      <input type="date" id="date" required />
+      <input type="number" id="capacity" placeholder="Capacidad" required />
+      <button type="submit">Crear</button>
+    </form>
+  `;
+}
+
+document.addEventListener("submit", async (e) => {
+  if (e.target.id === "createEventForm") {
+    e.preventDefault();
+    const name = document.getElementById("name").value;
+    const date = document.getElementById("date").value;
+    const capacity = parseInt(document.getElementById("capacity").value);
+
+    await fetch("http://localhost:3000/events", {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({ name, date, capacity }),
     });
+
+    alert("Evento creado");
+    window.location.href = "/dashboard";
   }
-  
-  async function updateEvent(id, event) {
-    await fetch(`${API_URL}/events/${id}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(event)
-    });
-  }
-  
-  async function deleteEvent(id) {
-    await fetch(`${API_URL}/events/${id}`, { method: 'DELETE' });
-  }
-  
-  async function registerToEvent(eventId, userId) {
-    const registrations = await fetch(`${API_URL}/registrations?eventId=${eventId}`);
-    const registrationData = await registrations.json();
-    if (registrationData.length >= 10) { // Límite de capacidad
-      alert('Evento lleno');
-      return false;
-    }
-    await fetch(`${API_URL}/registrations`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ eventId, userId })
-    });
-    return true;
-  }
-  
-  async function getUserRegistrations(userId) {
-    const response = await fetch(`${API_URL}/registrations?userId=${userId}`);
-    return await response.json();
-  }
-  
-  // Vistas de eventos
-  function renderDashboard() {
-    const user = getCurrentUser();
-    let content = '<h2>Eventos Disponibles</h2><div class="event-list">';
-    getEvents().then(events => {
-      events.forEach(event => {
-        content += `
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">${event.name}</h5>
-              <p class="card-text">${event.description}</p>
-              <p class="card-text"><small>${event.date}</small></p>
-              ${user && user.role === 'admin' ? `
-                <a href="#/dashboard/events/edit/${event.id}" class="btn btn-warning">Editar</a>
-                <button class="btn btn-danger" onclick="deleteEvent(${event.id}).then(() => navigateTo('/dashboard'))">Eliminar</button>
-              ` : `
-                <button class="btn btn-primary" onclick="registerToEvent(${event.id}, ${user?.id}).then(success => success && navigateTo('/dashboard'))">Registrarse</button>
-              `}
-            </div>
-          </div>
-        `;
-      });
-      content += '</div>';
-      if (user && user.role === 'admin') {
-        content += '<a href="#/dashboard/events/create" class="btn btn-success mt-3">Crear Evento</a>';
-      }
-      if (user) {
-        content += '<h3 class="mt-4">Mis Registros</h3>';
-        getUserRegistrations(user.id).then(regs => {
-          getEvents().then(events => {
-            regs.forEach(reg => {
-              const event = events.find(e => e.id === reg.eventId);
-              content += `
-                <div class="card">
-                  <div class="card-body">
-                    <h5 class="card-title">${event?.name}</h5>
-                    <p class="card-text">${event?.date}</p>
-                  </div>
-                </div>
-              `;
-            });
-            document.getElementById('app').innerHTML = content;
-          });
-        });
-      } else {
-        document.getElementById('app').innerHTML = content;
-      }
-    });
-    return content;
-  }
-  
-  function renderCreateEvent() {
-    return `
-      <div class="form-container">
-        <h2>Crear Evento</h2>
-        <form id="create-event-form">
-          <div class="mb-3">
-            <label for="name" class="form-label">Nombre</label>
-            <input type="text" class="form-control" id="name" required>
-          </div>
-          <div class="mb-3">
-            <label for="description" class="form-label">Descripción</label>
-            <textarea class="form-control" id="description" required></textarea>
-          </div>
-          <div class="mb-3">
-            <label for="date" class="form-label">Fecha</label>
-            <input type="date" class="form-control" id="date" required>
-          </div>
-          <button type="submit" class="btn btn-primary">Crear</button>
-        </form>
-      </div>
-    `;
-  }
-  
-  function renderEditEvent(eventId) {
-    getEvents().then(events => {
-      const event = events.find(e => e.id == eventId);
-      if (event) {
-        document.getElementById('app').innerHTML = `
-          <div class="form-container">
-            <h2>Editar Evento</h2>
-            <form id="edit-event-form">
-              <div class="mb-3">
-                <label for="name" class="form-label">Nombre</label>
-                <input type="text" class="form-control" id="name" value="${event.name}" required>
-              </div>
-              <div class="mb-3">
-                <label for="description" class="form-label">Descripción</label>
-                <textarea class="form-control" id="description" required>${event.description}</textarea>
-              </div>
-              <div class="mb-3">
-                <label for="date" class="form-label">Fecha</label>
-                <input type="date" class="form-control" id="date" value="${event.date}" required>
-              </div>
-              <button type="submit" class="btn btn-primary">Guardar</button>
-            </form>
-          </div>
-        `;
-      }
-    });
-  }
-  
-  function setupEventListeners() {
-    document.addEventListener('submit', async (e) => {
-      if (e.target.id === 'create-event-form') {
-        e.preventDefault();
-        const event = {
-          name: e.target.querySelector('#name').value,
-          description: e.target.querySelector('#description').value,
-          date: e.target.querySelector('#date').value
-        };
-        await createEvent(event);
-        navigateTo('/dashboard');
-      } else if (e.target.id === 'edit-event-form') {
-        e.preventDefault();
-        const event = {
-          name: e.target.querySelector('#name').value,
-          description: e.target.querySelector('#description').value,
-          date: e.target.querySelector('#date').value
-        };
-        const eventId = window.location.hash.split('/').pop();
-        await updateEvent(eventId, event);
-        navigateTo('/dashboard');
-      }
-    });
-  }
+});
