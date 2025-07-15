@@ -26,6 +26,10 @@ A single-page application for managing events with authentication, protected rou
 ## Administrator credentials
 - Administrator: `admin` / `admin123`
 
+- Nombre : `Thomas Noriega Zuleta`
+- Clan : `Berners lee`
+- C.C : `1013342406`
+
 
 # Spanish  -- Gestión de Eventos SPA
 
