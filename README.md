@@ -26,6 +26,8 @@ A single-page application for managing events with authentication, protected rou
 ## Administrator credentials
 - Administrator: `admin` / `admin123`
 
+
+## Riwi coder info
 - Nombre : `Thomas Noriega Zuleta`
 - Clan : `Berners lee`
 - C.C : `1013342406`
@@ -59,3 +61,8 @@ Una Single Page Application para gestionar eventos con autenticación, rutas pro
 
 ## Credenciales para administrador
 - Admin: `admin` / `admin123`
+
+  ## Informacion de desarrollador de riwi
+- Nombre : `Thomas Noriega Zuleta`
+- Clan : `Berners lee`
+- C.C : `1013342406`
