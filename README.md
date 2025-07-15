@@ -14,6 +14,8 @@ Una Single Page Application para gestionar eventos con autenticación, rutas pro
 - `css/styles.css`: Estilos personalizados.
 - `js/`: Lógica de la aplicación.
 - `db.json`: Base de datos simulada.
+- <img width="222" height="391" alt="cap" src="https://github.com/user-attachments/assets/aef8b883-a7ef-493e-bc30-8044ab9019b6" />
+
 
 ## Funcionalidades
 - Registro e inicio de sesión con roles (admin/visitante).
