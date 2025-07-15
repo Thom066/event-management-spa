@@ -11,6 +11,24 @@
       "username": "thomas",
       "password": "123",
       "role": "visitor"
+    },
+    {
+      "id": "eec3",
+      "username": "alexander",
+      "password": "12345",
+      "role": "visitor"
+    },
+    {
+      "id": "2a3b",
+      "username": "tapias",
+      "password": "12",
+      "role": "visitor"
+    },
+    {
+      "id": "4435",
+      "username": "Mateo",
+      "password": "1",
+      "role": "visitor"
     }
   ],
   "events": [
@@ -21,11 +39,58 @@
       "date": "2025-07-14"
     },
     {
-      "name": "Encuesta de satisfaccion modulo ",
+      "id": "f433",
+      "name": "Encuesta de satisfaccion modulo 3",
       "description": "realiza la encuesta de satisfaccion",
-      "date": "2025-07-17",
-      "id": "f433"
+      "date": "2025-07-17"
+    },
+    {
+      "id": "3413",
+      "name": "Sustentacion js",
+      "description": "Sustentacion js",
+      "date": "2025-07-15"
     }
   ],
-  "registrations": []
+  "registrations": [
+    {
+      "id": "c482",
+      "eventId": "f988",
+      "userId": "252b"
+    },
+    {
+      "id": "16da",
+      "eventId": "f433",
+      "userId": "252b"
+    },
+    {
+      "id": "1bd9",
+      "eventId": "f433",
+      "userId": "eec3"
+    },
+    {
+      "id": "3d0c",
+      "eventId": "f988",
+      "userId": "eec3"
+    },
+    {
+      "id": "51cb",
+      "eventId": "f433",
+      "userId": "2a3b"
+    },
+    {
+      "id": "dc75",
+      "eventId": "3413",
+      "userId": "252b"
+    },
+    {
+      "id": "0735",
+      "eventId": "f988",
+      "userId": "4435"
+    },
+    {
+      "id": "35b6",
+      "eventId": "f433",
+      "userId": "4435"
+    }
+  ]
 }

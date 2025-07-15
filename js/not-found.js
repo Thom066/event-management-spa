@@ -1,7 +1,10 @@
-export function renderNotFound() {
+// not-found.js
+function renderNotFound() {
     return `
-      <h2>Página no encontrada</h2>
-      <a href="/dashboard" data-link>Ir al inicio</a>
+      <div class="text-center">
+        <h2>404 - Página no encontrada</h2>
+        <p>Lo sentimos, la página que buscas no existe.</p>
+        <a href="#/dashboard" class="btn btn-primary">Volver al inicio</a>
+      </div>
     `;
   }
-  

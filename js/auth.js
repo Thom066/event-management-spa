@@ -1,53 +1,124 @@
-// auth.js
-const API_URL = "http://localhost:3000/users";
+const API_URL = 'http://localhost:3000';
 
-// Referencias
-const form = document.querySelector("form");
-const isLogin = window.location.pathname === "/login";
-const isRegister = window.location.pathname === "/register";
+// Registrar usuario
+async function registerUser(username, password, role = 'visitor') {
+  try {
+    const response = await fetch(`${API_URL}/users`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password, role })
+    });
+    return response.ok;
+  } catch (error) {
+    console.error('Error al registrar:', error);
+    return false;
+  }
+}
 
-// Evento
-if (form) {
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const email = form.email.value.trim();
-    const password = form.password.value.trim();
-    const rol = form.rol ? form.rol.value : null;
+// Iniciar sesión
+async function loginUser(username, password) {
+  try {
+    const response = await fetch(`${API_URL}/users?username=${username}&password=${password}`);
+    const users = await response.json();
+    if (users.length > 0) {
+      const user = users[0];
+      localStorage.setItem('user', JSON.stringify(user));
 
-    if (!email || !password || (isRegister && !rol)) {
-      alert("Todos los campos son obligatorios");
-      return;
+      // ⚠️ Intento previo de registro a evento
+      const pendingEventId = localStorage.getItem('pendingEventId');
+      if (pendingEventId) {
+        localStorage.removeItem('pendingEventId');
+        await registerToEvent(pendingEventId, user.id);
+      }
+
+      return user;
     }
+    return null;
+  } catch (error) {
+    console.error('Error al iniciar sesión:', error);
+    return null;
+  }
+}
 
-    const res = await fetch(API_URL);
-    const users = await res.json();
-    const user = users.find((u) => u.email === email);
+// Obtener usuario actual
+function getCurrentUser() {
+  return JSON.parse(localStorage.getItem('user'));
+}
 
-    if (isRegister) {
-      if (user) return alert("Este correo ya está registrado");
-      await fetch(API_URL, {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({ email, password, rol }),
-      });
-      alert("Usuario registrado con éxito");
-      window.location.href = "/login";
-    } else {
-      if (!user || user.password !== password)
-        return alert("Credenciales inválidas");
-      localStorage.setItem("user", JSON.stringify(user));
-      window.location.href = "/dashboard";
+// Cerrar sesión
+function logout() {
+  localStorage.removeItem('user');
+  navigateTo('/dashboard');
+}
+
+// Formularios de login y registro
+function renderLogin() {
+  return `
+    <div class="form-container">
+      <h2>Iniciar Sesión</h2>
+      <form id="login-form">
+        <div class="mb-3">
+          <label for="username" class="form-label">Usuario</label>
+          <input type="text" class="form-control" id="username" required>
+        </div>
+        <div class="mb-3">
+          <label for="password" class="form-label">Contraseña</label>
+          <input type="password" class="form-control" id="password" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Iniciar Sesión</button>
+      </form>
+      <p class="mt-3">¿No tienes cuenta? <a href="#/register">Regístrate</a></p>
+    </div>
+  `;
+}
+
+function renderRegister() {
+  return `
+    <div class="form-container">
+      <h2>Registrarse</h2>
+      <form id="register-form">
+        <div class="mb-3">
+          <label for="username" class="form-label">Usuario</label>
+          <input type="text" class="form-control" id="username" required>
+        </div>
+        <div class="mb-3">
+          <label for="password" class="form-label">Contraseña</label>
+          <input type="password" class="form-control" id="password" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Registrarse</button>
+      </form>
+      <p class="mt-3">¿Ya tienes cuenta? <a href="#/login">Inicia sesión</a></p>
+    </div>
+  `;
+}
+
+// Eventos para login y registro
+function setupAuthListeners() {
+  document.addEventListener('submit', async (e) => {
+    if (e.target.id === 'login-form') {
+      e.preventDefault();
+      const username = e.target.querySelector('#username').value;
+      const password = e.target.querySelector('#password').value;
+      const user = await loginUser(username, password);
+      if (user) {
+        navigateTo('/dashboard');
+      } else {
+        alert('Credenciales incorrectas');
+      }
+    } else if (e.target.id === 'register-form') {
+      e.preventDefault();
+      const username = e.target.querySelector('#username').value;
+      const password = e.target.querySelector('#password').value;
+      const success = await registerUser(username, password);
+      if (success) {
+        alert('Registro exitoso. Por favor, inicia sesión.');
+        navigateTo('/login');
+      } else {
+        alert('Error al registrarse');
+      }
     }
   });
 }
 
-// Función de logout
-export function logout() {
-  localStorage.removeItem("user");
-  window.location.href = "/login";
-}
-
-// Utilidad para obtener usuario actual
-export function getCurrentUser() {
-  return JSON.parse(localStorage.getItem("user"));
-}
+// Logout global
+window.logout = logout;
